@@ -1,8 +1,8 @@
 class Node {
   constructor(left, data, right) {
-    this.left = left.length >= 1 ? buildTree(left) : null;
+    this.left = buildTree(left);
     this.data = data;
-    this.right = right.length >= 1 ? buildTree(right) : null;
+    this.right = buildTree(right);
   }
 }
 
@@ -61,6 +61,7 @@ function removeDuplicatesArr(inp, counter = 0, arr = []) {
 }
 
 function buildTree(arr) {
+  if (arr.length === 0) return null;
   let sorted = mergeSorter(arr);
   let removedDup = removeDuplicatesArr(sorted);
 
@@ -69,13 +70,10 @@ function buildTree(arr) {
   let right = removedDup.slice(middleIndex + 1);
   let middle = removedDup[middleIndex];
 
-  // return middle;
-
   return new Node(left, middle, right);
 }
-let tree1 = buildTree([1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15]);
 let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
-// console.log(nTree, 'Tree');
+console.log(nTree.root);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -89,14 +87,22 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
-prettyPrint(tree1);
-
-function insert() {}
-
-function del() {
-  return 2;
-}
+prettyPrint(nTree.root);
 
 /**
- * build the functions inside of Tree class
+ * start with insert()
+ *  if value already in there, don't insert
+ *  testing:
+ *    i can start with empty array and just insert all numbers
+ *    i can start with 0, insert 1.
+ *      then 1 value in arr, insert 1.
+ *        number higher than value, then less
+ *      then 2 values in arr, insert 1.
+ *        number higher than value, then less
+ *      then 5 values in arr, insert 1.
+ *        number higher than value, then less
+ *      etc. till it works for good
+ * then do del()
+ *
+ * build rest of functions inside of Tree class
  */
