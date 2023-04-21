@@ -1,8 +1,8 @@
 class Node {
   constructor(left, data, right) {
-    this.left = buildTree(left);
+    this.left = left;
     this.data = data;
-    this.right = buildTree(right);
+    this.right = right;
   }
 }
 
@@ -70,7 +70,7 @@ function buildTree(arr) {
   let right = removedDup.slice(middleIndex + 1);
   let middle = removedDup[middleIndex];
 
-  return new Node(left, middle, right);
+  return new Node(buildTree(left), middle, buildTree(right));
 }
 let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
 console.log(nTree.root);
