@@ -11,6 +11,22 @@ class Tree {
     this.arr = arr;
     this.root = buildTree(arr);
   }
+
+  insert(value) {
+    if (this.root === null) {
+      this.root = buildTree([value]);
+    } else {
+      if (value != this.root.data) {
+        if (value < this.root.data) {
+          this.root.left = buildTree([value]);
+        } else {
+          this.root.right = buildTree([value]);
+        }
+      } else {
+        console.log('equal');
+      }
+    }
+  }
 }
 
 function mergeSorter(arr) {
@@ -72,8 +88,8 @@ function buildTree(arr) {
 
   return new Node(buildTree(left), middle, buildTree(right));
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
-console.log(nTree.root);
+let nTree = new Tree([5]);
+nTree.insert(5);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -90,19 +106,31 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 prettyPrint(nTree.root);
 
 /**
+ * might create find() first
+ *
  * start with insert()
  *  if value already in there, don't insert
+ *  it's always gonna be a leaf, cause no duplicates
  *  testing:
+ *    *must be backwards compatible(arr0,arr1)
  *    i can start with empty array and just insert all numbers
- *    i can start with 0, insert 1.
- *      then 1 value in arr, insert 1.
- *        number higher than value, then less
- *      then 2 values in arr, insert 1.
+ *    do 2 values in arr, insert 1.
  *        number higher than value, then less
  *      then 5 values in arr, insert 1.
  *        number higher than value, then less
  *      etc. till it works for good
  * then do del()
+ *  no rebalancing, leave as is
+ *  count # of children
+ *  if it's a leaf, you could just delete it
+ *    set full node to = null
+ *  if it has one child,
+ *    point the father to the one child
+ *      set father's (left or right) = child's node
+ *  if it has 2 children,
+ *    find next biggest number in over all tree
+ *    remove it and replace
+ *    might have to do some recursion here
  *
  * build rest of functions inside of Tree class
  */
