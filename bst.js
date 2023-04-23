@@ -15,12 +15,10 @@ class Tree {
   insert(value) {
     let isNull = false;
     let nodeChecking = this.root;
-    let isEqual = false;
     if (this.root === null) {
       this.root;
     }
     while (isNull === false) {
-      // console.log(nodeChecking, 'nodeChecking');
       if (this.root === null) {
         isNull = true;
         this.root = new Node(null, value, null);
@@ -38,28 +36,29 @@ class Tree {
         isNull = true;
       }
     }
-    // if (this.root === null) {
-    //   this.root = buildTree([value]);
-    // } else {
-    //   if (value != this.root.data) {
-    //     console.log(this.root.data, 'outside');
-    //     if (value < this.root.data) {
-    //       console.log(this.root.data, 'left');
-    //       this.root.left = buildTree([value]);
-    //     } else {
-    //       console.log(this.root.data, 'right');
-    //       this.root.right = buildTree([value]);
-    //     }
+  }
 
-    //     // if (value < this.root.data) {
-    //     //   this.root.left = buildTree([value]);
-    //     // } else {
-    //     //   this.root.right = buildTree([value]);
-    //     // }
-    //   } else {
-    //     console.log('equal');
-    //   }
-    // }
+  del(value) {
+    let isValue = false;
+    let nodeChecking = this.root;
+    let childrenCount = 0;
+    while (true) {
+      if (nodeChecking === null) {
+        break;
+      } else if (value < nodeChecking.data) {
+        nodeChecking = nodeChecking.left;
+      } else if (value > nodeChecking.data) {
+        nodeChecking = nodeChecking.right;
+      } else if (nodeChecking.data === value) {
+        isValue = true;
+        let leftCount = nodeChecking.left === null ? 0 : 1;
+        let rightCount = nodeChecking.right === null ? 0 : 1;
+        childrenCount += leftCount + rightCount;
+        break;
+      }
+    }
+
+    return childrenCount;
   }
 }
 
@@ -122,16 +121,8 @@ function buildTree(arr) {
 
   return new Node(buildTree(left), middle, buildTree(right));
 }
-let nTree = new Tree([1, 2, 34, 5, 7, 8, 9, 10, 12]);
-console.log(nTree);
-nTree.insert(6);
-console.log(nTree);
-nTree.insert(7);
-console.log(nTree);
-nTree.insert(4);
-console.log(nTree);
-nTree.insert(3);
-console.log(nTree);
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+console.log(nTree.del(8));
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -148,31 +139,21 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 prettyPrint(nTree.root);
 
 /**
- * might create find() first
+ * 1. is the value there? true/false[done]
+ * 2. how many children? 0, 1, or 2
+ * 3. implement for 0 children
+ * 4. implement for 1 child
+ * 5. implement for 2 children
  *
- * start with insert()
- *  if value already in there, don't insert
- *  it's always gonna be a leaf, cause no duplicates
- *  testing:
- *    *must be backwards compatible(arr0,arr1)
- *    do 2 values in arr, insert 1.
- *        number higher than value, then less
- *      then 5 values in arr, insert 1.
- *        number higher than value, then less
- *      etc. till it works for good
- *
- * then do del()
+ * do del()
  *  no rebalancing, leave as is
- *  count # of children
- *  if it's a leaf, you could just delete it
- *    set full node to = null
- *  if it has one child,
- *    point the father to the one child
- *      set father's (left or right) = child's node
- *  if it has 2 children,
- *    find next biggest number in over all tree
- *    remove it and replace
- *    might have to do some recursion here
- *
- * build rest of functions inside of Tree class
+ * first just find the node
+ *  if I reach null, node isn't there, exit
+ * once found calculate children
+ *  if children == 0
+ *    just delete, go to father and set to null
+ *  if children == 1
+ *    point father's (left or right) = child's node
+ *  if children == 2
+ *    find next biggest number in over all tree, remove it and replace
  */
