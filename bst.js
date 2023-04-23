@@ -13,19 +13,53 @@ class Tree {
   }
 
   insert(value) {
+    let isNull = false;
+    let nodeChecking = this.root;
+    let isEqual = false;
     if (this.root === null) {
-      this.root = buildTree([value]);
-    } else {
-      if (value != this.root.data) {
-        if (value < this.root.data) {
-          this.root.left = buildTree([value]);
-        } else {
-          this.root.right = buildTree([value]);
-        }
+      this.root;
+    }
+    while (isNull === false) {
+      // console.log(nodeChecking, 'nodeChecking');
+      if (this.root === null) {
+        isNull = true;
+        this.root = new Node(null, value, null);
+      } else if (value < nodeChecking.data && nodeChecking.left === null) {
+        isNull = true;
+        nodeChecking.left = new Node(null, value, null);
+      } else if (value > nodeChecking.data && nodeChecking.right === null) {
+        isNull = true;
+        nodeChecking.right = new Node(null, value, null);
+      } else if (value < nodeChecking.data) {
+        nodeChecking = nodeChecking.left;
+      } else if (value > nodeChecking.data) {
+        nodeChecking = nodeChecking.right;
       } else {
-        console.log('equal');
+        isNull = true;
       }
     }
+    // if (this.root === null) {
+    //   this.root = buildTree([value]);
+    // } else {
+    //   if (value != this.root.data) {
+    //     console.log(this.root.data, 'outside');
+    //     if (value < this.root.data) {
+    //       console.log(this.root.data, 'left');
+    //       this.root.left = buildTree([value]);
+    //     } else {
+    //       console.log(this.root.data, 'right');
+    //       this.root.right = buildTree([value]);
+    //     }
+
+    //     // if (value < this.root.data) {
+    //     //   this.root.left = buildTree([value]);
+    //     // } else {
+    //     //   this.root.right = buildTree([value]);
+    //     // }
+    //   } else {
+    //     console.log('equal');
+    //   }
+    // }
   }
 }
 
@@ -88,8 +122,16 @@ function buildTree(arr) {
 
   return new Node(buildTree(left), middle, buildTree(right));
 }
-let nTree = new Tree([5]);
-nTree.insert(5);
+let nTree = new Tree([1, 2, 34, 5, 7, 8, 9, 10, 12]);
+console.log(nTree);
+nTree.insert(6);
+console.log(nTree);
+nTree.insert(7);
+console.log(nTree);
+nTree.insert(4);
+console.log(nTree);
+nTree.insert(3);
+console.log(nTree);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -113,12 +155,12 @@ prettyPrint(nTree.root);
  *  it's always gonna be a leaf, cause no duplicates
  *  testing:
  *    *must be backwards compatible(arr0,arr1)
- *    i can start with empty array and just insert all numbers
  *    do 2 values in arr, insert 1.
  *        number higher than value, then less
  *      then 5 values in arr, insert 1.
  *        number higher than value, then less
  *      etc. till it works for good
+ *
  * then do del()
  *  no rebalancing, leave as is
  *  count # of children
