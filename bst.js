@@ -87,25 +87,28 @@ class Tree {
         } else if (childrenCount === 2) {
           console.log(2);
           /**
-           * get right tree
-           * go all the way left
+           * place next highest where deletion node is
+           *
+           * parent.left of nextHighestNode= null
+           * root node.data = nextHighestNode.data
            */
 
           let deletionNode = nodeChecking[nodeChecking.length - 1];
           let queue = [deletionNode.right];
-          // let rightNode = deletionNode.right;
-          // let leftNode = rightNode.left;
-          // let
+          let nextHighestNode;
           while (true) {
             if (queue[queue.length - 1].left === null) {
               break;
             }
             queue.push(queue[queue.length - 1].left);
+            nextHighestNode = queue[queue.length - 1];
           }
-          console.log(deletionNode, 'deletionNode');
-          // console.log(rightNode, 'rightNode');
           console.log(queue[queue.length - 1], 'leftNode');
-          console.log(queue, 'queue');
+          console.log(deletionNode, 'deletionNode');
+          console.log(nextHighestNode, 'nextHighestNode');
+          deletionNode.data = nextHighestNode.data;
+          queue[queue.length - 2].left = null;
+          console.log(queue[queue.length - 2]);
         }
 
         break;
@@ -257,8 +260,9 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-// let nTree = new Tree(randomNodesArr());
+// let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+let randomArR = randomNodesArr();
+let nTree = new Tree(randomArR);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -273,8 +277,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
-nTree.del(8);
-// prettyPrint(nTree.root);
+nTree.del(randomArR[0]);
+prettyPrint(nTree.root);
 
 /**
  * 1. is the value there? true/false[done]
