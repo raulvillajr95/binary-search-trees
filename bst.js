@@ -86,6 +86,26 @@ class Tree {
           parentNode[parentToDelDirection] = childNode;
         } else if (childrenCount === 2) {
           console.log(2);
+          /**
+           * get right tree
+           * go all the way left
+           */
+
+          let deletionNode = nodeChecking[nodeChecking.length - 1];
+          let queue = [deletionNode.right];
+          // let rightNode = deletionNode.right;
+          // let leftNode = rightNode.left;
+          // let
+          while (true) {
+            if (queue[queue.length - 1].left === null) {
+              break;
+            }
+            queue.push(queue[queue.length - 1].left);
+          }
+          console.log(deletionNode, 'deletionNode');
+          // console.log(rightNode, 'rightNode');
+          console.log(queue[queue.length - 1], 'leftNode');
+          console.log(queue, 'queue');
         }
 
         break;
@@ -237,7 +257,7 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 // let nTree = new Tree(randomNodesArr());
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -253,7 +273,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
-nTree.del(2);
+nTree.del(8);
 // prettyPrint(nTree.root);
 
 /**
