@@ -39,6 +39,7 @@ class Tree {
   }
 
   del(value) {
+    if (this.find(value) === null) return null;
     let isValue = false;
     let nodeChecking = [this.root];
     let childrenCount = 0;
@@ -72,26 +73,17 @@ class Tree {
             this.root = null;
           }
         } else if (childrenCount === 1) {
-          // point father's (left or right) = child's node
+          console.log(1);
           let deletionNode = nodeChecking[nodeChecking.length - 1];
           let parentNode = nodeChecking[nodeChecking.length - 2];
           let childNode;
           let parentToDelDirection = turns[turns.length - 1];
-          console.log(1);
-          console.log(
-            turns[turns.length - 1],
-            '<-- parent to delete direction'
-          );
           if (deletionNode.right === null) {
             childNode = deletionNode['left'];
           } else if (deletionNode.left === null) {
             childNode = deletionNode['right'];
           }
           parentNode[parentToDelDirection] = childNode;
-
-          console.log(deletionNode, 'delete');
-          console.log(parentNode, 'parent');
-          console.log(childNode, 'CHILD');
         } else if (childrenCount === 2) {
           console.log(2);
         }
@@ -118,6 +110,23 @@ class Tree {
     }
 
     return nodeChecking;
+  }
+
+  leverOrder(func) {
+    let fullArr = [];
+    let queue = [this.root];
+    function enqueueChildren(node) {
+      if (node.left !== null) {
+        queue.push(node.left);
+      }
+      if (node.right !== null) {
+        queue.push(node.right);
+      }
+    }
+    while (queue.length !== 0) {
+      enqueueChildren(queue[0]);
+      fullArr.push(func(queue.shift()));
+    }
   }
 
   height(node) {
@@ -228,7 +237,7 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
 // let nTree = new Tree(randomNodesArr());
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -244,9 +253,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
-nTree.del(9);
-nTree.del(4);
-prettyPrint(nTree.root);
+nTree.del(2);
+// prettyPrint(nTree.root);
 
 /**
  * 1. is the value there? true/false[done]
@@ -272,7 +280,7 @@ prettyPrint(nTree.root);
  *  if children == 2
  *    find next biggest number in over all tree, remove it and replace
  *
- * Assignments left = [4,6,7,10,11]
+ * Assignments left = [4,7,10,11]
  * tie it all together = [1,2,3,4,5,6,7,8]
  */
 
