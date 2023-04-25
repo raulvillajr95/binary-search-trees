@@ -40,8 +40,71 @@ class Tree {
 
   del(value) {
     let isValue = false;
-    let nodeChecking = this.root;
+    let nodeChecking = [this.root];
     let childrenCount = 0;
+    let leftCount;
+    let rightCount;
+    let turns = [];
+    while (true) {
+      if (nodeChecking === null) {
+        break;
+      } else if (value < nodeChecking[nodeChecking.length - 1].data) {
+        nodeChecking.push(nodeChecking[nodeChecking.length - 1].left);
+        turns.push('left');
+      } else if (value > nodeChecking[nodeChecking.length - 1].data) {
+        nodeChecking.push(nodeChecking[nodeChecking.length - 1].right);
+        turns.push('right');
+      } else if (nodeChecking[nodeChecking.length - 1].data === value) {
+        isValue = true;
+        leftCount = nodeChecking[nodeChecking.length - 1].left === null ? 0 : 1;
+        rightCount =
+          nodeChecking[nodeChecking.length - 1].right === null ? 0 : 1;
+        childrenCount += leftCount + rightCount;
+
+        // impletmentation for each type of children
+        if (childrenCount === 0) {
+          console.log(0);
+          if (turns[turns.length - 1] === 'left') {
+            nodeChecking[nodeChecking.length - 2].left = null;
+          } else if (turns[turns.length - 1] === 'right') {
+            nodeChecking[nodeChecking.length - 2].right = null;
+          } else if (turns.length === 0) {
+            this.root = null;
+          }
+        } else if (childrenCount === 1) {
+          // point father's (left or right) = child's node
+          let deletionNode = nodeChecking[nodeChecking.length - 1];
+          let parentNode = nodeChecking[nodeChecking.length - 2];
+          let childNode;
+          let parentToDelDirection = turns[turns.length - 1];
+          console.log(1);
+          console.log(
+            turns[turns.length - 1],
+            '<-- parent to delete direction'
+          );
+          if (deletionNode.right === null) {
+            childNode = deletionNode['left'];
+          } else if (deletionNode.left === null) {
+            childNode = deletionNode['right'];
+          }
+          parentNode[parentToDelDirection] = childNode;
+
+          console.log(deletionNode, 'delete');
+          console.log(parentNode, 'parent');
+          console.log(childNode, 'CHILD');
+        } else if (childrenCount === 2) {
+          console.log(2);
+        }
+
+        break;
+      }
+    }
+
+    return childrenCount;
+  }
+
+  find(value) {
+    let nodeChecking = this.root;
     while (true) {
       if (nodeChecking === null) {
         break;
@@ -50,15 +113,48 @@ class Tree {
       } else if (value > nodeChecking.data) {
         nodeChecking = nodeChecking.right;
       } else if (nodeChecking.data === value) {
-        isValue = true;
-        let leftCount = nodeChecking.left === null ? 0 : 1;
-        let rightCount = nodeChecking.right === null ? 0 : 1;
-        childrenCount += leftCount + rightCount;
         break;
       }
     }
 
-    return childrenCount;
+    return nodeChecking;
+  }
+
+  height(node) {
+    let nodeChecking = node;
+    let heightCount = 0;
+    while (true) {
+      if (nodeChecking === null) {
+        break;
+      } else {
+        nodeChecking = nodeChecking.right;
+        heightCount += 1;
+      }
+    }
+
+    return heightCount - 1;
+  }
+
+  depth(node) {
+    if (node === null) return null;
+    node = node.data;
+    let nodeChecking = this.root;
+    let depthCount = 0;
+    while (true) {
+      if (nodeChecking === null) {
+        break;
+      } else if (node < nodeChecking.data) {
+        nodeChecking = nodeChecking.left;
+        depthCount += 1;
+      } else if (node > nodeChecking.data) {
+        nodeChecking = nodeChecking.right;
+        depthCount += 1;
+      } else if (nodeChecking.data === node) {
+        break;
+      }
+    }
+
+    return depthCount;
   }
 }
 
@@ -121,8 +217,19 @@ function buildTree(arr) {
 
   return new Node(buildTree(left), middle, buildTree(right));
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
-console.log(nTree.del(8));
+
+function randomNumberInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+function randomNodesArr() {
+  let arr = [];
+  for (let i = 0; i < randomNumberInRange(10, 100); i++) {
+    arr.push(Math.round(randomNumberInRange(1, 100)));
+  }
+  return arr;
+}
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+// let nTree = new Tree(randomNodesArr());
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -137,13 +244,21 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
+nTree.del(9);
+nTree.del(4);
+prettyPrint(nTree.root);
 
 /**
  * 1. is the value there? true/false[done]
- * 2. how many children? 0, 1, or 2
- * 3. implement for 0 children
- * 4. implement for 1 child
+ * 2. how many children? 0, 1, or 2[done]
+ * 3. implement for 0 children[done]
+ * 4. implement for 1 child[done]
  * 5. implement for 2 children
+ *
+ * work on inorder()
+ * start with small tree [1,2,3]
+ * then [1,2,3,4,5,6,7]
+ * then up to 15, etc.
  *
  * do del()
  *  no rebalancing, leave as is
@@ -156,4 +271,13 @@ prettyPrint(nTree.root);
  *    point father's (left or right) = child's node
  *  if children == 2
  *    find next biggest number in over all tree, remove it and replace
+ *
+ * Assignments left = [4,6,7,10,11]
+ * tie it all together = [1,2,3,4,5,6,7,8]
  */
+
+// Testing, getting the father
+// let childObj = { left: null, data: 6, right: null };
+// let rootObj = { left: childObj, data: 8, right: 9 };
+// console.log(childObj);
+// console.log(this.parent, 'test test');
