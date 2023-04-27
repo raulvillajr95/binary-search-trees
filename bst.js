@@ -90,8 +90,8 @@ class Tree {
           // swap deletionNode value == nextHighestNode value[done]
           // does nextHighestNode have right child?[done]
           // find nextHighestNode's parent node[done]
-          // get queue of directions, might need to have to pre-do right
-          //   get last direction used, on way to get nextHighestNode
+          // get queue of directions[done]
+          //   get last direction used[done]
           //   if nextHighestNode has right child:
           //     find nextHighestNode's right child
           //     parent[lastDirection] = rightChild
@@ -102,20 +102,28 @@ class Tree {
 
           let deletionNode = this.find(value);
           let queue = [deletionNode, deletionNode.right];
+          let directions = ['right'];
           let nextHighestNode;
           while (queue[queue.length - 1].left != null) {
             queue.push(queue[queue.length - 1].left);
+            directions.push('left');
           }
 
           nextHighestNode = queue[queue.length - 1];
           deletionNode.data = nextHighestNode.data;
           let parentOfNextHighestNode = queue[queue.length - 2];
+          let lastDirection = directions[directions.length - 1];
           console.log(parentOfNextHighestNode, 'parentOfNextHighestNode');
+          console.log(lastDirection);
 
           if (nextHighestNode.right === null) {
             console.log('no right child');
+            parentOfNextHighestNode[lastDirection] = null;
           } else {
             console.log('yes right child');
+            let rightChild = nextHighestNode.right;
+            console.log(rightChild);
+            parentOfNextHighestNode[lastDirection] = rightChild;
           }
         }
 
@@ -286,7 +294,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 };
 // prettyPrint(nTree.root);
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 50; i++) {
   let randomArR = randomNodesArr();
   let nTree = new Tree(randomArR);
 
