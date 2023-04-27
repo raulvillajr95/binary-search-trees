@@ -64,7 +64,7 @@ class Tree {
 
         // impletmentation for each type of children
         if (childrenCount === 0) {
-          console.log(0);
+          console.log('0');
           if (turns[turns.length - 1] === 'left') {
             nodeChecking[nodeChecking.length - 2].left = null;
           } else if (turns[turns.length - 1] === 'right') {
@@ -73,7 +73,7 @@ class Tree {
             this.root = null;
           }
         } else if (childrenCount === 1) {
-          console.log(1);
+          console.log('1');
           let deletionNode = nodeChecking[nodeChecking.length - 1];
           let parentNode = nodeChecking[nodeChecking.length - 2];
           let childNode;
@@ -85,30 +85,38 @@ class Tree {
           }
           parentNode[parentToDelDirection] = childNode;
         } else if (childrenCount === 2) {
-          console.log(2);
-          /**
-           * place next highest where deletion node is
-           *
-           * parent.left of nextHighestNode= null
-           * root node.data = nextHighestNode.data
-           */
+          console.log('2');
+          // find next highest node[done]
+          // swap deletionNode value == nextHighestNode value[done]
+          // does nextHighestNode have right child?[done]
+          // find nextHighestNode's parent node[done]
+          // get queue of directions, might need to have to pre-do right
+          //   get last direction used, on way to get nextHighestNode
+          //   if nextHighestNode has right child:
+          //     find nextHighestNode's right child
+          //     parent[lastDirection] = rightChild
+          //   else
+          //     parent[lastDirection] = null
+          //
+          // ideas:
 
-          let deletionNode = nodeChecking[nodeChecking.length - 1];
-          let queue = [deletionNode.right];
+          let deletionNode = this.find(value);
+          let queue = [deletionNode, deletionNode.right];
           let nextHighestNode;
-          while (true) {
-            if (queue[queue.length - 1].left === null) {
-              break;
-            }
+          while (queue[queue.length - 1].left != null) {
             queue.push(queue[queue.length - 1].left);
-            nextHighestNode = queue[queue.length - 1];
           }
-          console.log(queue[queue.length - 1], 'leftNode');
-          console.log(deletionNode, 'deletionNode');
-          console.log(nextHighestNode, 'nextHighestNode');
+
+          nextHighestNode = queue[queue.length - 1];
           deletionNode.data = nextHighestNode.data;
-          queue[queue.length - 2].left = null;
-          console.log(queue[queue.length - 2]);
+          let parentOfNextHighestNode = queue[queue.length - 2];
+          console.log(parentOfNextHighestNode, 'parentOfNextHighestNode');
+
+          if (nextHighestNode.right === null) {
+            console.log('no right child');
+          } else {
+            console.log('yes right child');
+          }
         }
 
         break;
@@ -261,8 +269,8 @@ function randomNodesArr() {
   return arr;
 }
 // let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-let randomArR = randomNodesArr();
-let nTree = new Tree(randomArR);
+// let randomArR = randomNodesArr();
+// let nTree = new Tree(randomArR);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -276,9 +284,21 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
-prettyPrint(nTree.root);
-nTree.del(randomArR[0]);
-prettyPrint(nTree.root);
+// prettyPrint(nTree.root);
+
+for (let i = 0; i < 10; i++) {
+  let randomArR = randomNodesArr();
+  let nTree = new Tree(randomArR);
+
+  prettyPrint(nTree.root);
+  console.log(randomArR[0], '1st num in randomArr');
+  nTree.del(randomArR[0]);
+  prettyPrint(nTree.root);
+}
+
+// console.log(randomArR[0]);
+// nTree.del(randomArR[0]);
+// prettyPrint(nTree.root);
 
 /**
  * 1. is the value there? true/false[done]
@@ -294,15 +314,9 @@ prettyPrint(nTree.root);
  *
  * do del()
  *  no rebalancing, leave as is
- * first just find the node
- *  if I reach null, node isn't there, exit
- * once found calculate children
- *  if children == 0
- *    just delete, go to father and set to null
- *  if children == 1
- *    point father's (left or right) = child's node
- *  if children == 2
- *    find next biggest number in over all tree, remove it and replace
+ *  fix lil errors,
+ *    what if nextHighestNode has right child
+ *    might need some recursion
  *
  * Assignments left = [4,7,10,11]
  * tie it all together = [1,2,3,4,5,6,7,8]
