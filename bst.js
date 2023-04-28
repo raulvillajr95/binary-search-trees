@@ -147,6 +147,7 @@ class Tree {
   }
 
   inorder(func) {
+    // lnr (left, data, right)
     if (this.root === null) return null;
 
     /**
@@ -186,9 +187,27 @@ class Tree {
     // console.log(this.root.right.right);
   }
 
-  preorder(func) {}
+  preorder(func) {
+    // nlr (data, left, right)
+    if (this.root === null) return null;
 
-  postorder(func) {}
+    let stack = [[this.root.data, this.root.left, this.root.right]];
+
+    while (stack.length >= 1) {
+      /**
+       * go wild here,
+       *  3 while loops, until null each loop
+       *    node, then, left, then right
+       */
+    }
+
+    console.log(stack);
+  }
+
+  postorder(func) {
+    // lrn (data, left, right, data)
+    if (this.root === null) return null;
+  }
 
   height(node) {
     let nodeChecking = node;
@@ -227,7 +246,33 @@ class Tree {
     return depthCount;
   }
 
-  isBalanced() {}
+  isBalanced() {
+    /**
+     * ideas:
+     * create function, input array of numbers, out boolean
+     *  numbers cannot differ by one
+     * create function, input huge array of numbers, out smaller arrays
+     *  possibly output one huge array with smaller arrays
+     *  inner arrays must be in the length of 1, 2, 4, 8, 16, etc.
+     */
+
+    const base2Arrays = (arr) => {
+      let starter = 1;
+      let base2 = 1;
+      for (let i = 0; starter <= arr.length; i += base2) {
+        let testing = `starter: ${starter}, base2: ${base2}, sliced: ${arr.slice(
+          starter - base2,
+          starter
+        )}, i:${i}`;
+        console.log(testing);
+        console.log(arr.slice(starter - base2, starter));
+        base2 = base2 * 2;
+        starter += base2;
+      }
+      return true;
+    };
+    console.log(base2Arrays([1, 2, 2, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8]));
+  }
 
   rebalance() {
     let newArr = [];
@@ -310,6 +355,9 @@ function randomNodesArr() {
   return arr;
 }
 let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+nTree.isBalanced();
+
+// nTree.preorder();
 // nTree.inorder();
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
@@ -361,4 +409,10 @@ prettyPrint(nTree.root);
  * ideas:
  * i may not be able to solve the 'order' functions, but
  *  i can add a lil something everytime and little by little solve em
+ * when we move down in the tree we add to stack
+ *  when we move up in tree, we remove from stack
+ * everytime I visit a new node,
+ *  add it's type to the stack? (nlr, lnr, lrn)
+ *  so it would be array with arrays inside
+ *    if (one of them is null, don't add that part)
  */
