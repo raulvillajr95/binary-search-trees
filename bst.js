@@ -64,7 +64,6 @@ class Tree {
 
         // impletmentation for each type of children
         if (childrenCount === 0) {
-          console.log('0');
           if (turns[turns.length - 1] === 'left') {
             nodeChecking[nodeChecking.length - 2].left = null;
           } else if (turns[turns.length - 1] === 'right') {
@@ -73,7 +72,6 @@ class Tree {
             this.root = null;
           }
         } else if (childrenCount === 1) {
-          console.log('1');
           let deletionNode = nodeChecking[nodeChecking.length - 1];
           let parentNode = nodeChecking[nodeChecking.length - 2];
           let childNode;
@@ -85,21 +83,6 @@ class Tree {
           }
           parentNode[parentToDelDirection] = childNode;
         } else if (childrenCount === 2) {
-          console.log('2');
-          // find next highest node[done]
-          // swap deletionNode value == nextHighestNode value[done]
-          // does nextHighestNode have right child?[done]
-          // find nextHighestNode's parent node[done]
-          // get queue of directions[done]
-          //   get last direction used[done]
-          //   if nextHighestNode has right child:
-          //     find nextHighestNode's right child
-          //     parent[lastDirection] = rightChild
-          //   else
-          //     parent[lastDirection] = null
-          //
-          // ideas:
-
           let deletionNode = this.find(value);
           let queue = [deletionNode, deletionNode.right];
           let directions = ['right'];
@@ -113,16 +96,11 @@ class Tree {
           deletionNode.data = nextHighestNode.data;
           let parentOfNextHighestNode = queue[queue.length - 2];
           let lastDirection = directions[directions.length - 1];
-          console.log(parentOfNextHighestNode, 'parentOfNextHighestNode');
-          console.log(lastDirection);
 
           if (nextHighestNode.right === null) {
-            console.log('no right child');
             parentOfNextHighestNode[lastDirection] = null;
           } else {
-            console.log('yes right child');
             let rightChild = nextHighestNode.right;
-            console.log(rightChild);
             parentOfNextHighestNode[lastDirection] = rightChild;
           }
         }
@@ -151,7 +129,7 @@ class Tree {
     return nodeChecking;
   }
 
-  leverOrder(func) {
+  levelOrder(func) {
     let fullArr = [];
     let queue = [this.root];
     function enqueueChildren(node) {
@@ -167,6 +145,50 @@ class Tree {
       fullArr.push(func(queue.shift()));
     }
   }
+
+  inorder(func) {
+    if (this.root === null) return null;
+
+    /**
+     * left until null
+     * up 1
+     *   if has right
+     *     if has left
+     *       left until null
+     *
+     * grab number of times visited
+     * if visited 2 times add to an array
+     */
+
+    let fullArr = [];
+
+    let stack = [this.root];
+    let lastDirection = stack[stack.length - 1];
+    let objTimesPassed = {};
+    objTimesPassed[lastDirection.data] = 1;
+
+    while (lastDirection.left !== null) {
+      stack.push(lastDirection.left);
+      lastDirection = stack[stack.length - 1];
+
+      objTimesPassed[lastDirection.data] = 1;
+    }
+    console.log(stack);
+    console.log(lastDirection, 'leftist');
+    console.log(objTimesPassed, 'times passed');
+
+    // console.log(this.root.left.left); // left until left == null
+    // console.log(this.root.left); // up one
+    // console.log(this.root.left.right); // right, and left until left == null
+    // console.log(this.root); // up 2
+    // console.log(this.root.right.left); //
+    // console.log(this.root.right);
+    // console.log(this.root.right.right);
+  }
+
+  preorder(func) {}
+
+  postorder(func) {}
 
   height(node) {
     let nodeChecking = node;
@@ -203,6 +225,17 @@ class Tree {
     }
 
     return depthCount;
+  }
+
+  isBalanced() {}
+
+  rebalance() {
+    let newArr = [];
+    this.levelOrder((e) => {
+      newArr.push(e.data);
+    });
+    this.arr = newArr;
+    this.root = buildTree(this.arr);
   }
 }
 
@@ -276,7 +309,8 @@ function randomNodesArr() {
   }
   return arr;
 }
-// let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+// nTree.inorder();
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
 
@@ -292,46 +326,39 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
-// prettyPrint(nTree.root);
+prettyPrint(nTree.root);
 
-for (let i = 0; i < 50; i++) {
-  let randomArR = randomNodesArr();
-  let nTree = new Tree(randomArR);
+// for (let i = 0; i < 10; i++) {
+//   let randomArR = randomNodesArr();
+//   let nTree = new Tree(randomArR);
 
-  prettyPrint(nTree.root);
-  console.log(randomArR[0], '1st num in randomArr');
-  nTree.del(randomArR[0]);
-  prettyPrint(nTree.root);
-}
-
-// console.log(randomArR[0]);
-// nTree.del(randomArR[0]);
-// prettyPrint(nTree.root);
+//   let arr = [];
+//   nTree.levelOrder((e) => {
+//     arr.push(nTree.height(e));
+//   });
+//   console.log(arr);
+//   prettyPrint(nTree.root);
+//   // console.log(randomArR[0], '1st num in randomArr');
+//   // prettyPrint(nTree.root);
+// }
 
 /**
- * 1. is the value there? true/false[done]
- * 2. how many children? 0, 1, or 2[done]
- * 3. implement for 0 children[done]
- * 4. implement for 1 child[done]
- * 5. implement for 2 children
- *
  * work on inorder()
  * start with small tree [1,2,3]
  * then [1,2,3,4,5,6,7]
  * then up to 15, etc.
  *
- * do del()
- *  no rebalancing, leave as is
- *  fix lil errors,
- *    what if nextHighestNode has right child
- *    might need some recursion
+ * work on isBalanced()
+ * input array of numbers
+ * output boolean
+ * numbers cannot differitiate by more than 1
+ * good: [3, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+ * bad: [4, 2, 2, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
  *
- * Assignments left = [4,7,10,11]
+ * Assignments left = [7,10]
  * tie it all together = [1,2,3,4,5,6,7,8]
+ *
+ * ideas:
+ * i may not be able to solve the 'order' functions, but
+ *  i can add a lil something everytime and little by little solve em
  */
-
-// Testing, getting the father
-// let childObj = { left: null, data: 6, right: null };
-// let rootObj = { left: childObj, data: 8, right: 9 };
-// console.log(childObj);
-// console.log(this.parent, 'test test');
