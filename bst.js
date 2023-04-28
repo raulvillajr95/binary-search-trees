@@ -249,29 +249,46 @@ class Tree {
   isBalanced() {
     /**
      * ideas:
-     * create function, input array of numbers, out boolean
+     * create function, input array of numbers, output boolean
      *  numbers cannot differ by one
-     * create function, input huge array of numbers, out smaller arrays
+     * create function, input huge array of numbers, output smaller arrays
      *  possibly output one huge array with smaller arrays
      *  inner arrays must be in the length of 1, 2, 4, 8, 16, etc.
      */
+    let lvlArr = [];
+    nTree.levelOrder((e) => {
+      lvlArr.push(nTree.height(e));
+    });
+
+    const withinOne = (arr) => {
+      let highest = -Infinity;
+      let lowest = Infinity;
+
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i] > highest) highest = arr[i];
+        if (arr[i] < lowest) lowest = arr[i];
+      }
+
+      return highest - lowest <= 1;
+    };
+    // console.log(withinOne([341355, 353, 351, 34, 2, 33, 6, 4, 1]));
 
     const base2Arrays = (arr) => {
       let starter = 1;
       let base2 = 1;
       for (let i = 0; starter <= arr.length; i += base2) {
-        let testing = `starter: ${starter}, base2: ${base2}, sliced: ${arr.slice(
-          starter - base2,
-          starter
-        )}, i:${i}`;
-        console.log(testing);
-        console.log(arr.slice(starter - base2, starter));
+        // console.log(arr.slice(starter - base2, starter));
+        if (withinOne(arr.slice(starter - base2, starter)) === false) {
+          return false;
+        }
         base2 = base2 * 2;
         starter += base2;
       }
       return true;
     };
-    console.log(base2Arrays([1, 2, 2, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8]));
+    // console.log(base2Arrays([1, 2, 2, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8]));
+    console.log(lvlArr);
+    return base2Arrays(lvlArr);
   }
 
   rebalance() {
@@ -354,8 +371,7 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
-nTree.isBalanced();
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
 // nTree.preorder();
 // nTree.inorder();
@@ -375,6 +391,15 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
+nTree.del(1);
+nTree.del(2);
+nTree.del(3);
+nTree.del(4);
+nTree.del(5);
+nTree.del(6);
+nTree.del(7);
+prettyPrint(nTree.root);
+console.log(nTree.isBalanced());
 
 // for (let i = 0; i < 10; i++) {
 //   let randomArR = randomNodesArr();
