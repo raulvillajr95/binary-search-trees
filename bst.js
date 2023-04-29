@@ -210,11 +210,21 @@ class Tree {
   isBalanced() {
     /**
      * ideas:
+     * comparing heights 1 by 1, using inorder
      */
-    let lvlArr = [];
-    nTree.levelOrder((e) => {
-      lvlArr.push(nTree.height(e));
+    let inArr = [];
+    nTree.inorder((e) => {
+      inArr.push(nTree.height(e));
     });
+
+    function compare(arr) {
+      for (let i = 0; i < arr.length / 2; i++) {
+        // console.log(arr[i], arr[arr.length - (1 + i)]);
+        if (Math.abs(arr[i] - arr[arr.length - (1 + i)]) > 1) return false;
+      }
+      return true;
+    }
+    return compare(inArr);
   }
 
   rebalance() {
@@ -299,21 +309,6 @@ function randomNodesArr() {
 }
 let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
 
-let arrPre = [];
-nTree.preorder((e) => {
-  arrPre.push(e.data);
-});
-console.log(arrPre, 'Pre');
-let arrIn = [];
-nTree.inorder((e) => {
-  arrIn.push(e.data);
-});
-console.log(arrIn, 'In');
-let arrPost = [];
-nTree.postorder((e) => {
-  arrPost.push(e.data);
-});
-console.log(arrPost, 'Post');
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
 
@@ -330,13 +325,18 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
+console.log(nTree.isBalanced());
+nTree.del(1);
+nTree.del(2);
+prettyPrint(nTree.root);
+console.log(nTree.isBalanced());
 
 // for (let i = 0; i < 10; i++) {
 //   let randomArR = randomNodesArr();
 //   let nTree = new Tree(randomArR);
 
 //   let arr = [];
-//   nTree.levelOrder((e) => {
+//   nTree.postorder((e) => {
 //     arr.push(nTree.height(e));
 //   });
 //   console.log(arr);
@@ -346,23 +346,13 @@ prettyPrint(nTree.root);
 // }
 
 /**
- * work on inorder()
- * start with small tree [1,2,3]
- * then [1,2,3,4,5,6,7]
- * then up to 15, etc.
- *
  * work on isBalanced()
+ *  in 1 array compare numbers
+ *    from outside to the inside
  *
- * Assignments left = [7,10]
+ *
+ * Assignments left = [10]
  * tie it all together = [1,2,3,4,5,6,7,8]
  *
  * ideas:
- * i may not be able to solve the 'order' functions, but
- *  i can add a lil something everytime and little by little solve em
- * when we move down in the tree we add to stack
- *  when we move up in tree, we remove from stack
- * everytime I visit a new node,
- *  add it's type to the stack? (nlr, lnr, lrn)
- *  so it would be array with arrays inside
- *    if (one of them is null, don't add that part)
  */
