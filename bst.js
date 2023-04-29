@@ -160,53 +160,63 @@ class Tree {
      * grab number of times visited
      * if visited 2 times add to an array
      */
-
-    let fullArr = [];
-
-    let stack = [this.root];
-    let lastDirection = stack[stack.length - 1];
-    let objTimesPassed = {};
-    objTimesPassed[lastDirection.data] = 1;
-
-    while (lastDirection.left !== null) {
-      stack.push(lastDirection.left);
-      lastDirection = stack[stack.length - 1];
-
-      objTimesPassed[lastDirection.data] = 1;
-    }
-    console.log(stack);
-    console.log(lastDirection, 'leftist');
-    console.log(objTimesPassed, 'times passed');
-
-    // console.log(this.root.left.left); // left until left == null
-    // console.log(this.root.left); // up one
-    // console.log(this.root.left.right); // right, and left until left == null
-    // console.log(this.root); // up 2
-    // console.log(this.root.right.left); //
-    // console.log(this.root.right);
-    // console.log(this.root.right.right);
   }
 
   preorder(func) {
     // nlr (data, left, right)
     if (this.root === null) return null;
+    let fullArr = [];
 
-    let stack = [[this.root.data, this.root.left, this.root.right]];
+    let stack = [];
+    let nodeOn = this.root;
 
-    while (stack.length >= 1) {
-      /**
-       * go wild here,
-       *  3 while loops, until null each loop
-       *    node, then, left, then right
-       */
+    function visitNode() {
+      fullArr.push(nodeOn.data);
+      stack.push(nodeOn);
+    }
+    function visitLeft() {
+      if (nodeOn.left !== null) {
+        nodeOn = nodeOn.left;
+      }
+    }
+    function visitRight() {
+      if (nodeOn.right !== null) {
+        nodeOn = nodeOn.right;
+      }
+    }
+    function goUp() {
+      stack.pop();
+      nodeOn = stack[stack.length - 1];
     }
 
-    console.log(stack);
+    visitNode();
+    visitLeft();
+    visitNode();
+    visitLeft();
+    visitRight();
+    goUp();
+    visitRight();
+    visitNode();
+    visitLeft();
+    visitRight();
+    goUp();
+
+    console.log(nodeOn, 'nodeOn');
+    console.log(stack, 'stack');
+    console.log(fullArr, 'fullArr');
   }
 
   postorder(func) {
-    // lrn (data, left, right, data)
+    // lrn (left, right, data)
     if (this.root === null) return null;
+
+    let stack = [this.root];
+
+    while (stack[stack.length - 1].left !== null) {
+      stack.push(stack[stack.length - 1].left);
+    }
+
+    console.log(stack);
   }
 
   height(node) {
@@ -249,46 +259,11 @@ class Tree {
   isBalanced() {
     /**
      * ideas:
-     * create function, input array of numbers, output boolean
-     *  numbers cannot differ by one
-     * create function, input huge array of numbers, output smaller arrays
-     *  possibly output one huge array with smaller arrays
-     *  inner arrays must be in the length of 1, 2, 4, 8, 16, etc.
      */
     let lvlArr = [];
     nTree.levelOrder((e) => {
       lvlArr.push(nTree.height(e));
     });
-
-    const withinOne = (arr) => {
-      let highest = -Infinity;
-      let lowest = Infinity;
-
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] > highest) highest = arr[i];
-        if (arr[i] < lowest) lowest = arr[i];
-      }
-
-      return highest - lowest <= 1;
-    };
-    // console.log(withinOne([341355, 353, 351, 34, 2, 33, 6, 4, 1]));
-
-    const base2Arrays = (arr) => {
-      let starter = 1;
-      let base2 = 1;
-      for (let i = 0; starter <= arr.length; i += base2) {
-        // console.log(arr.slice(starter - base2, starter));
-        if (withinOne(arr.slice(starter - base2, starter)) === false) {
-          return false;
-        }
-        base2 = base2 * 2;
-        starter += base2;
-      }
-      return true;
-    };
-    // console.log(base2Arrays([1, 2, 2, 4, 4, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8]));
-    console.log(lvlArr);
-    return base2Arrays(lvlArr);
   }
 
   rebalance() {
@@ -371,10 +346,11 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+let nTree = new Tree([1, 2, 3]);
 
 // nTree.preorder();
 // nTree.inorder();
+nTree.postorder();
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
 
@@ -391,15 +367,6 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 prettyPrint(nTree.root);
-nTree.del(1);
-nTree.del(2);
-nTree.del(3);
-nTree.del(4);
-nTree.del(5);
-nTree.del(6);
-nTree.del(7);
-prettyPrint(nTree.root);
-console.log(nTree.isBalanced());
 
 // for (let i = 0; i < 10; i++) {
 //   let randomArR = randomNodesArr();
@@ -422,11 +389,6 @@ console.log(nTree.isBalanced());
  * then up to 15, etc.
  *
  * work on isBalanced()
- * input array of numbers
- * output boolean
- * numbers cannot differitiate by more than 1
- * good: [3, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
- * bad: [4, 2, 2, 1, 3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
  *
  * Assignments left = [7,10]
  * tie it all together = [1,2,3,4,5,6,7,8]
