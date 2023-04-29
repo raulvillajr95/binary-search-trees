@@ -146,77 +146,28 @@ class Tree {
     }
   }
 
-  inorder(func) {
+  inorder(func, root = this.root) {
     // lnr (left, data, right)
-    if (this.root === null) return null;
-
-    /**
-     * left until null
-     * up 1
-     *   if has right
-     *     if has left
-     *       left until null
-     *
-     * grab number of times visited
-     * if visited 2 times add to an array
-     */
+    if (root == null) return;
+    this.inorder(func, root.left);
+    func(root);
+    this.inorder(func, root.right);
   }
 
-  preorder(func) {
+  preorder(func, root = this.root) {
     // nlr (data, left, right)
-    if (this.root === null) return null;
-    let fullArr = [];
-
-    let stack = [];
-    let nodeOn = this.root;
-
-    function visitNode() {
-      fullArr.push(nodeOn.data);
-      stack.push(nodeOn);
-    }
-    function visitLeft() {
-      if (nodeOn.left !== null) {
-        nodeOn = nodeOn.left;
-      }
-    }
-    function visitRight() {
-      if (nodeOn.right !== null) {
-        nodeOn = nodeOn.right;
-      }
-    }
-    function goUp() {
-      stack.pop();
-      nodeOn = stack[stack.length - 1];
-    }
-
-    visitNode();
-    visitLeft();
-    visitNode();
-    visitLeft();
-    visitRight();
-    goUp();
-    visitRight();
-    visitNode();
-    visitLeft();
-    visitRight();
-    goUp();
-
-    console.log(nodeOn, 'nodeOn');
-    console.log(stack, 'stack');
-    console.log(fullArr, 'fullArr');
+    if (root === null) return;
+    func(root);
+    this.preorder(func, root.left);
+    this.preorder(func, root.right);
   }
 
-  postorder(func) {
+  postorder(func, root = this.root) {
     // lrn (left, right, data)
-    if (this.root === null) return null;
-
-    let stack = [this.root];
-
-    while (stack[stack.length - 1].left !== null) {
-      stack.push(stack[stack.length - 1].left);
-    }
-
-    console.log(stack);
+    if (root === null) return;
+    this.postorder(func, root.left);
+    this.postorder(func, root.right);
+    func(root);
   }
 
   height(node) {
@@ -346,11 +297,23 @@ function randomNodesArr() {
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3]);
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
 
-// nTree.preorder();
-// nTree.inorder();
-nTree.postorder();
+let arrPre = [];
+nTree.preorder((e) => {
+  arrPre.push(e.data);
+});
+console.log(arrPre, 'Pre');
+let arrIn = [];
+nTree.inorder((e) => {
+  arrIn.push(e.data);
+});
+console.log(arrIn, 'In');
+let arrPost = [];
+nTree.postorder((e) => {
+  arrPost.push(e.data);
+});
+console.log(arrPost, 'Post');
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
 
