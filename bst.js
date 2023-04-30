@@ -207,20 +207,21 @@ class Tree {
     return depthCount;
   }
 
-  isBalanced() {
+  isBalanced(root = this.root) {
     /**
      * ideas:
      * comparing heights 1 by 1, using inorder
      */
     let inArr = [];
-    nTree.inorder((e) => {
-      inArr.push(nTree.height(e));
+    this.inorder((e) => {
+      // inArr.push([e.data, this.height(e)]);
+      inArr.push(this.height(e));
     });
+    console.log(inArr);
 
     function compare(arr) {
       for (let i = 0; i < arr.length / 2; i++) {
-        // console.log(arr[i], arr[arr.length - (1 + i)]);
-        if (Math.abs(arr[i] - arr[arr.length - (1 + i)]) > 1) return false;
+        if (Math.abs(arr[i] - arr[arr.length - (1 + i)]) > 2) return false;
       }
       return true;
     }
@@ -302,12 +303,13 @@ function randomNumberInRange(min, max) {
 }
 function randomNodesArr() {
   let arr = [];
-  for (let i = 0; i < randomNumberInRange(10, 100); i++) {
+  for (let i = 0; i < randomNumberInRange(10, 50); i++) {
     arr.push(Math.round(randomNumberInRange(1, 100)));
   }
   return arr;
 }
-let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+// let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+// console.log(nTree.isBalanced());
 
 // let randomArR = randomNodesArr();
 // let nTree = new Tree(randomArR);
@@ -324,35 +326,36 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
-prettyPrint(nTree.root);
-console.log(nTree.isBalanced());
-nTree.del(1);
-nTree.del(2);
-prettyPrint(nTree.root);
-console.log(nTree.isBalanced());
 
-// for (let i = 0; i < 10; i++) {
-//   let randomArR = randomNodesArr();
-//   let nTree = new Tree(randomArR);
+function driverScript() {
+  // 1
+  let randomArr = randomNodesArr();
+  let tree1 = new Tree(randomArr);
 
-//   let arr = [];
-//   nTree.postorder((e) => {
-//     arr.push(nTree.height(e));
-//   });
-//   console.log(arr);
-//   prettyPrint(nTree.root);
-//   // console.log(randomArR[0], '1st num in randomArr');
-//   // prettyPrint(nTree.root);
-// }
+  // 2
+  console.log(tree1.isBalanced());
+
+  prettyPrint(tree1.root);
+}
+// driverScript();
+
+// prettyPrint(nTree.root);
+
+for (let i = 0; i < 10; i++) {
+  let randomArR = randomNodesArr();
+  let nTree = new Tree(randomArR);
+
+  console.log(nTree.isBalanced());
+
+  prettyPrint(nTree.root);
+}
 
 /**
- * work on isBalanced()
- *  in 1 array compare numbers
- *    from outside to the inside
+ * work on 'Tie it all together'
  *
  *
  * Assignments left = [10]
- * tie it all together = [1,2,3,4,5,6,7,8]
+ * tie it all together = [2,3,4,5,6,7,8]
  *
  * ideas:
  */
