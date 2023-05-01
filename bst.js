@@ -208,24 +208,18 @@ class Tree {
   }
 
   isBalanced(root = this.root) {
-    /**
-     * ideas:
-     * comparing heights 1 by 1, using inorder
-     */
-    let inArr = [];
-    this.inorder((e) => {
-      // inArr.push([e.data, this.height(e)]);
-      inArr.push(this.height(e));
-    });
-    console.log(inArr);
-
-    function compare(arr) {
-      for (let i = 0; i < arr.length / 2; i++) {
-        if (Math.abs(arr[i] - arr[arr.length - (1 + i)]) > 2) return false;
-      }
+    if (root === null) {
       return true;
     }
-    return compare(inArr);
+
+    let leftTreeHeight = this.height(root.left);
+    let rightTreeHeight = this.height(root.right);
+
+    if (Math.abs(leftTreeHeight - rightTreeHeight) > 1) {
+      return false;
+    }
+
+    return this.isBalanced(root.left) && this.isBalanced(root.right);
   }
 
   rebalance() {
@@ -308,11 +302,6 @@ function randomNodesArr() {
   }
   return arr;
 }
-// let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
-// console.log(nTree.isBalanced());
-
-// let randomArR = randomNodesArr();
-// let nTree = new Tree(randomArR);
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
   if (node === null) {
@@ -326,6 +315,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
   }
 };
+let nTree = new Tree([1, 2, 3, 4, 5, 6, 7]);
+// prettyPrint(nTree.root);
 
 function driverScript() {
   // 1
@@ -335,27 +326,83 @@ function driverScript() {
   // 2
   console.log(tree1.isBalanced());
 
+  // 3
+  let arrLevel = [];
+  tree1.levelOrder((e) => {
+    arrLevel.push(e.data);
+  });
+  console.log(arrLevel);
+  let arrPre = [];
+  tree1.preorder((e) => {
+    arrPre.push(e.data);
+  });
+  console.log(arrPre);
+  let arrPost = [];
+  tree1.postorder((e) => {
+    arrPost.push(e.data);
+  });
+  console.log(arrPost);
+  let arrIn = [];
+  tree1.inorder((e) => {
+    arrIn.push(e.data);
+  });
+  console.log(arrIn);
+
+  // 4
+  for (let i = 101; i <= 201; i++) {
+    tree1.insert(i);
+  }
+
+  // 5
+  console.log(tree1.isBalanced());
+
+  // 6
+  tree1.rebalance();
+
+  // 7
+  console.log(tree1.isBalanced());
+
+  // 8
+  let arrLevel2 = [];
+  tree1.levelOrder((e) => {
+    arrLevel2.push(e.data);
+  });
+  console.log(arrLevel2);
+  let arrPre2 = [];
+  tree1.preorder((e) => {
+    arrPre2.push(e.data);
+  });
+  console.log(arrPre2);
+  let arrPost2 = [];
+  tree1.postorder((e) => {
+    arrPost2.push(e.data);
+  });
+  console.log(arrPost2);
+  let arrIn2 = [];
+  tree1.inorder((e) => {
+    arrIn2.push(e.data);
+  });
+  console.log(arrIn2);
+
   prettyPrint(tree1.root);
 }
 // driverScript();
 
-// prettyPrint(nTree.root);
+// for (let i = 0; i < 10; i++) {
+//   let randomArR = randomNodesArr();
+//   let nTree = new Tree(randomArR);
 
-for (let i = 0; i < 10; i++) {
-  let randomArR = randomNodesArr();
-  let nTree = new Tree(randomArR);
+//   console.log(nTree.isBalanced());
 
-  console.log(nTree.isBalanced());
-
-  prettyPrint(nTree.root);
-}
+//   prettyPrint(nTree.root);
+// }
 
 /**
  * work on 'Tie it all together'
  *
  *
- * Assignments left = [10]
- * tie it all together = [2,3,4,5,6,7,8]
+ * Assignments left = []
+ * tie it all together = []
  *
  * ideas:
  */
